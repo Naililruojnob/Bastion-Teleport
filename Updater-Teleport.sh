@@ -17,9 +17,9 @@ TELEPORT_VERSION=${LATEST_VERSION}
 log "Dernière version trouvée: ${TELEPORT_VERSION}"
 
 # Demander à l'utilisateur s'il souhaite mettre à jour
-read -p "Souhaitez-vous mettre à jour Teleport vers la version ${TELEPORT_VERSION} ? (Y/N): " user_choice
+read -p "Souhaitez-vous mettre à jour Teleport vers la version ${TELEPORT_VERSION} ? (y/n): " user_choice
 
-if [[ "$user_choice" != "Y" ]]; then
+if [[ "$user_choice" != "y" && "$user_choice" != "Y" ]]; then
     log "Mise à jour annulée par l'utilisateur."
     exit 0
 fi
@@ -43,4 +43,22 @@ if [ "${CHECKSUM}" != "${DOWNLOADED_CHECKSUM}" ]; then
     exit 1
 fi
 
-log "Téléchargement et vérification réussis."
+# Extraction des fichiers
+log "Extraction des fichiers..."
+tar -xvf ${TELEPORT_PKG}-v${TELEPORT_VERSION}-linux-${SYSTEM_ARCH}-bin.tar.gz
+
+# Installation
+log "Installation de Teleport..."
+cd ${TELEPORT_PKG}
+sudo ./install
+
+# Vérification de la version installée
+log "Vérification de la version installée..."
+teleport version
+
+# Nettoyage
+log "Nettoyage..."
+cd ~
+rm -rf ${TEMP_DIR}
+
+log "Mise à jour terminée avec succès !"
