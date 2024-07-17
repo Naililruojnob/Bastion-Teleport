@@ -87,3 +87,6 @@ NOTE: Make sure <proxy_host>:443 points at a Teleport proxy which users can acce
 ```
 
 Cette URL permettra à l'utilisateur de définir son mot de passe et de commencer à utiliser Teleport.
+
+
+Vous pouvez utiliser le script Teleport-Updater.sh pour mettre à jour votre Teleport.
