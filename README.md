@@ -22,6 +22,9 @@ sudo curl https://goteleport.com/static/install.sh | bash -s <version>
 
    Utilisez le fichier de configuration YAML suivant pour configurer Teleport derrière un reverse proxy. Assurez-vous d'adapter les domaines et les ports à votre environnement :
 
+
+/etc/teleport.yaml
+
    ```yaml
    version: v3
    teleport:
