@@ -2,7 +2,6 @@
 
 # Variables
 TELEPORT_PKG="teleport"  # Pour Teleport Community Edition, ajustez si nécessaire à "teleport-ent"
-TELEPORT_VERSION="16.1.0"
 SYSTEM_ARCH="amd64"  # Ajustez selon votre architecture système
 TEMP_DIR="/tmp/updater-teleport"
 
@@ -10,6 +9,20 @@ TEMP_DIR="/tmp/updater-teleport"
 log() {
     echo "[INFO] $1"
 }
+
+# Obtenir la dernière version de Teleport depuis GitHub
+log "Obtention de la dernière version de Teleport depuis GitHub..."
+LATEST_VERSION=$(curl -s https://api.github.com/repos/gravitational/teleport/releases/latest | grep '"tag_name"' | sed -E 's/.*"v([^"]+)".*/\1/')
+TELEPORT_VERSION=${LATEST_VERSION}
+log "Dernière version trouvée: ${TELEPORT_VERSION}"
+
+# Demander à l'utilisateur s'il souhaite mettre à jour
+read -p "Souhaitez-vous mettre à jour Teleport vers la version ${TELEPORT_VERSION} ? (Y/N): " user_choice
+
+if [[ "$user_choice" != "Y" ]]; then
+    log "Mise à jour annulée par l'utilisateur."
+    exit 0
+fi
 
 # Création du répertoire temporaire
 log "Création du répertoire temporaire ${TEMP_DIR}..."
@@ -30,22 +43,4 @@ if [ "${CHECKSUM}" != "${DOWNLOADED_CHECKSUM}" ]; then
     exit 1
 fi
 
-# Extraction des fichiers
-log "Extraction des fichiers..."
-tar -xvf ${TELEPORT_PKG}-v${TELEPORT_VERSION}-linux-${SYSTEM_ARCH}-bin.tar.gz
-
-# Installation
-log "Installation de Teleport..."
-cd ${TELEPORT_PKG}
-sudo ./install
-
-# Vérification de la version installée
-log "Vérification de la version installée..."
-teleport version
-
-# Nettoyage
-log "Nettoyage..."
-cd ~
-rm -rf ${TEMP_DIR}
-
-log "Mise à jour terminée avec succès !"
+log "Téléchargement et vérification réussis."
